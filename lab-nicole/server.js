@@ -31,15 +31,16 @@ const server = http.createServer(function(req, res) {
   }
 
   if (req.method === 'POST' || req.method === 'PUT') {
-    console.log('req.body', req.body);
-    if (req.body === undefined) {
-      res.writeHead(400, { 'Content-Type': 'text/plain' });
-      res.write(cowsay.say({ text: 'bad request' }));
-      res.end();
-      return;
-    }
     parseBody(req, function (err, data) {
+      if (data === undefined) {
+        res.writeHead(400, { 'Content-Type': 'text/plain' });
+        res.write(cowsay.say({ text: 'bad request' }));
+        res.end();
+        return;
+      }
+
       if (err) throw new Error('error');
+
       res.writeHead(200, { 'Content-Type': 'text/plain' });
       res.write(cowsay.say({ text: data.text }));
       res.end();
