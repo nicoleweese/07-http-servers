@@ -17,6 +17,7 @@ const server = http.createServer(function(req, res) {
       res.writeHead(400, { 'Content-Type': 'text/plain'});
       res.write(cowsay.say({ text: 'bad request'}));
       res.end();
+      return;
     }    
     res.writeHead(200, { 'Content-Type': 'text/plain' });
     res.write(cowsay.say({ text: req.url.query.text }));
@@ -32,15 +33,14 @@ const server = http.createServer(function(req, res) {
 
   if (req.method === 'POST' || req.method === 'PUT') {
     parseBody(req, function (err, data) {
+      if (err) throw new Error('error');
+      
       if (data === undefined) {
         res.writeHead(400, { 'Content-Type': 'text/plain' });
         res.write(cowsay.say({ text: 'bad request' }));
         res.end();
         return;
       }
-
-      if (err) throw new Error('error');
-
       res.writeHead(200, { 'Content-Type': 'text/plain' });
       res.write(cowsay.say({ text: data.text }));
       res.end();
